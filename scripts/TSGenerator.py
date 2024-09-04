@@ -27,7 +27,8 @@ class TypeScriptClassGenerator:
         type_mapping = {
             'VARCHAR': 'string',
             'INTEGER': 'number',
-            'REAL': 'number'
+            'REAL': 'number',
+            'INT': 'number'
         }
         if field['type'] == 'enum':
             return field['type_name']
@@ -123,7 +124,15 @@ class TypeScriptClassGenerator:
             ts_type = self.translate_type(field)
             default_value = field.get('default', 'undefined')
             if(field['type'] == 'enum'):
-                default_value = field['type_name']+"."+default_value.upper()
+                if default_value == 'default':
+                    default_value = field['type_name'] + "." + default_value.upper()
+                else:
+                    default_value = field['type_name'] + "." + field['enum_value'][0].upper()
+            if ts_type == 'string':
+                default_value = "\"" + default_value + "\""
+            if field['type'] == 'TIMESTAMP':
+                default_value = '"now"'
+
             comment = field.get('comment', '')
             metadata_lines.append(
                 f"        {{ 'name': '{field_name}',"

@@ -26,10 +26,12 @@ class SQLParser:
             (r'\bCHECK\b', 'CHECK'),
             (r'\bCOMMENT\b', 'COMMENT'),
             (r'\bINTEGER\b', 'INTEGER'),
+            (r'\bINT\b', 'INT'),
             (r'\bVARCHAR\b', 'VARCHAR'),
             (r'\bTEXT\b', 'TEXT'),
             (r'\bREAL\b', 'REAL'),
             (r'\bENUM\b', 'ENUM'),
+            (r'\bTIMESTAMP\b', 'TIMESTAMP'),
             (r'\d+\.\d+', 'REAL_LITERAL'),
             (r'\d+', 'INTEGER_LITERAL'),
             (r'\(\d+\)', 'VARCHAR_LENGTH'),
@@ -39,6 +41,7 @@ class SQLParser:
             (r',', 'COMMA'),
             (r';', 'SEMICOLON'),
             (r'\'[^\']*\'', 'STRING_LITERAL'),
+            (r'\bCURRENT_TIMESTAMP\b', 'CURRENT_TIMESTAMP'),
             (r'\b\w+\b', 'IDENTIFIER'),
         ]
 
@@ -49,9 +52,11 @@ class SQLParser:
             for group_name, value in match.groupdict().items():
                 if group_name and value is not None and group_name != 'None':
                     tokens.append((group_name, value))
+
         return tokens
 
-    # 处理 ENUM 类型
+        # 处理 ENUM 类型
+
     def handle_enum(self, index: int) -> Tuple[List[str], int]:
         enum_values = []
         if index < len(self.tokens) and self.tokens[index][0] == 'LPAREN':
@@ -70,7 +75,8 @@ class SQLParser:
                 return {'error': 'Unmatched parentheses in ENUM definition'}, index
         return enum_values, index - 1
 
-    # 处理 IF NOT EXISTS
+        # 处理 IF NOT EXISTS
+
     def handle_if_not_exists(self, index: int) -> Tuple[Dict, int]:
         table_info = {}
         if index + 4 > len(self.tokens):
@@ -85,7 +91,8 @@ class SQLParser:
 
         return table_info, index
 
-    # 解析字段定义
+        # 解析字段定义
+
     def parse_field_definitions(self, index: int) -> Tuple[Dict, int]:
         table_info = {}
         current_field = None
@@ -116,7 +123,7 @@ class SQLParser:
                 if current_field and 'type' in current_field and current_field['type'] == 'VARCHAR':
                     current_field['length'] = token_value.strip('()')
 
-            elif token_type in ['INTEGER', 'VARCHAR', 'REAL']:
+            elif token_type in ['INTEGER', 'INT', 'VARCHAR', 'REAL', 'TIMESTAMP']:
                 if current_field:
                     current_field['type'] = token_value
 
@@ -136,20 +143,23 @@ class SQLParser:
                 if current_field:
                     current_field['default'] = token_value
 
+            elif token_type == 'CURRENT_TIMESTAMP':
+                if current_field:
+                    current_field['default'] = 'CURRENT_TIMESTAMP'
+
             elif token_type == 'DEFAULT':
                 index += 1
                 if index < len(self.tokens):
                     token_type, token_value = self.tokens[index]
-                    if token_type in ['STRING_LITERAL', 'REAL_LITERAL', 'INTEGER_LITERAL']:
+                    if token_type in ['STRING_LITERAL', 'REAL_LITERAL', 'INTEGER_LITERAL', 'CURRENT_TIMESTAMP']:
                         current_field['default'] = token_value.strip("'")
 
             elif token_type == 'NOT_NULL':
-                if current_field:
-                    current_field['commit'] = 'NOT NULL'
+                continue
 
             elif token_type == 'AUTO_INCREMENT':
                 if current_field:
-                    current_field['commit'] = 'AUTO_INCREMENT'
+                    current_field['AUTO_INCREMENT'] = 'AUTO_INCREMENT'
 
             elif token_type == 'COMMENT':
                 index += 1

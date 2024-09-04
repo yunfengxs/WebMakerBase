@@ -9,6 +9,7 @@ class EnumGenerator:
         :param data_list: 字典数组，每个字典代表一个表及其字段。
         """
         self.data_list = data_list
+        self.enum_map = {}
 
     def extract_enums(self):
         """从数据字典中提取枚举类型字段并合并相同值的枚举。"""
@@ -37,7 +38,7 @@ class EnumGenerator:
         :param filename: 输出的 TypeScript 文件路径。
         """
         enums = self.extract_enums()
-
+        self.enum_map = enums
         # 合并枚举定义
         merged_enums = defaultdict(list)
         for values, name in enums.items():
@@ -61,8 +62,9 @@ class EnumGenerator:
         for data in self.data_list:
             for field in data.get('fields', []):
                 if field['type'] == 'enum':
-                    enum_name = field['name'].upper()
-                    field['type_name'] = enum_name
+                    enum_values = field['enum_value']
+                    enum_tuple = tuple(sorted(enum_values))
+                    field['type_name'] = self.enum_map[enum_tuple].upper()
 
     def get_updated_dict(self):
         """返回更新后的字典数组，其中 'enum' 类型字段已被转换为类名。"""

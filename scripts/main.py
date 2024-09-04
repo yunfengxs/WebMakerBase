@@ -5,6 +5,7 @@ from FileReader import SQLFileReader
 from SQLParser import SQLParser
 from GenEnums import EnumGenerator
 from TSGenerator import TypeScriptClassGenerator
+from scripts.RouterGenerator import RouterFileGenerator
 
 def convert_sql_to_dict(sql: str) -> Dict:
     parser = SQLParser(sql)
@@ -30,3 +31,8 @@ if __name__ == "__main__":
 
     generator = TypeScriptClassGenerator(updated_dict, 'inheritance.txt')
     generator.generate_files('../out/')
+
+    # 创建 RouterFileGenerator 实例并生成文件
+    output_directory = '../out/'
+    router_generator = RouterFileGenerator(updated_dict, output_directory)
+    router_generator.generate_ts_routers()
