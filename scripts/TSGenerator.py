@@ -122,8 +122,10 @@ class TypeScriptClassGenerator:
         for field in self.get_table_fields(table_name.lower()):
             field_name = field['name']
             ts_type = self.translate_type(field)
+            increase = field.get('AUTO_INCREMENT')
+
             default_value = field.get('default', 'undefined')
-            if(field['type'] == 'enum'):
+            if (field['type'] == 'enum'):
                 if default_value == 'default':
                     default_value = field['type_name'] + "." + default_value.upper()
                 else:
@@ -134,13 +136,23 @@ class TypeScriptClassGenerator:
                 default_value = '"now"'
 
             comment = field.get('comment', '')
-            metadata_lines.append(
-                f"        {{ 'name': '{field_name}',"
-                f" 'type': '{ts_type}',"
-                f" 'default': {default_value},"
-                f" 'comment': '{comment}'"
-                f" }},"  # 注意这里添加逗号
-            )
+            if increase:
+                metadata_lines.append(
+                    f"        {{ 'name': '{field_name}',"
+                    f" 'type': '{ts_type}',"
+                    f" 'default': {default_value},"
+                    f" 'comment': '{comment}',"
+                    f" 'auto_increase': '{increase}'"
+                    f" }},"  # 注意这里添加逗号
+                )
+            else:
+                metadata_lines.append(
+                    f"        {{ 'name': '{field_name}',"
+                    f" 'type': '{ts_type}',"
+                    f" 'default': {default_value},"
+                    f" 'comment': '{comment}',"
+                    f" }},"  # 注意这里添加逗号
+                )
         return (
                 "  static getMetadata(): object {\n"
                 + "    return {\n"

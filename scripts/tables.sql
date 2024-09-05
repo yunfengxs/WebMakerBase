@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `child`
 (
-    `id`                  VARCHAR(128) PRIMARY KEY comment 'ID',
+    `id`                  INT AUTO_INCREMENT PRIMARY KEY comment 'ID',
     `updated_at`          VARCHAR(255) NOT NULL comment '刷新时间',
     `execute_status`      VARCHAR(128) NOT NULL comment '执行状态',
     `execute_result`      INTEGER DEFAULT 0 comment '结果',
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `child`
 
 CREATE TABLE IF NOT EXISTS `father`
 (
-    `id`                  VARCHAR(128) PRIMARY KEY comment 'ID',
+    `id`                  INT AUTO_INCREMENT PRIMARY KEY comment 'ID',
     `updated_at`          VARCHAR(255) NOT NULL comment '刷新时间',
     `execute_status`      VARCHAR(128) NOT NULL comment '执行状态',
     `execute_result`      INTEGER DEFAULT 0 comment '结果',

@@ -33,7 +33,10 @@ class TypeScriptRouterGenerator:
 
     def generate_router_code(self):
         """生成 TypeScript 路由代码"""
-        insert_fields = [field[0] for field in self.valid_fields]
+        insert_fields = []
+        for field in self.valid_fields:
+            if field[0] not in self.auto_increment_fields:
+                insert_fields.append(field[0])
         insert_placeholders = ', '.join(['?' for _ in insert_fields])
         update_fields = [f'{field[0]} = ?' for field in self.valid_fields]
         update_placeholders = ', '.join(update_fields)
