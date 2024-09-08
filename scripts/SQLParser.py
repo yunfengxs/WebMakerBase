@@ -25,6 +25,7 @@ class SQLParser:
             (r'\bUNIQUE\b', 'UNIQUE'),
             (r'\bCHECK\b', 'CHECK'),
             (r'\bCOMMENT\b', 'COMMENT'),
+            (r'\bBOOLEAN\b', 'BOOLEAN'),
             (r'\bINTEGER\b', 'INTEGER'),
             (r'\bINT\b', 'INT'),
             (r'\bVARCHAR\b', 'VARCHAR'),
@@ -123,7 +124,7 @@ class SQLParser:
                 if current_field and 'type' in current_field and current_field['type'] == 'VARCHAR':
                     current_field['length'] = token_value.strip('()')
 
-            elif token_type in ['INTEGER', 'INT', 'VARCHAR', 'REAL', 'TIMESTAMP']:
+            elif token_type in ['INTEGER', 'INT', 'VARCHAR', 'REAL', 'TIMESTAMP', 'TEXT', 'BOOLEAN']:
                 if current_field:
                     current_field['type'] = token_value
 

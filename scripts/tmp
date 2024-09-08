@@ -1,0 +1,14 @@
+
+
+(r'\bBOOLEAN\b','BOOLEAN'),
+-            elif token_type in ['INTEGER', 'INT', 'VARCHAR', 'REAL', 'TIMESTAMP']:
++            elif token_type in ['INTEGER', 'INT', 'VARCHAR', 'REAL', 'TIMESTAMP', 'TEXT', 'BOOLEAN']:
+
+
+INSERT INTO weapons (name, quality, attack_power, special_effects, description, image_url, wear_type, can_be_destroyed, attribute_bonus, durability, level_requirement) VALUES
+('铁剑', '癸', 15, '无', '一把普通的铁剑，适合新手使用。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '单手', TRUE, '{"力量": 5}', 100, 1),
+('魔法弓', '壬', 20, '附加冰霜伤害', '能够射出带有冰霜魔法的箭矢。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '远程', TRUE, '{"敏捷": 7}', 80, 5),
+('黑暗长矛', '辛', 35, '吸血效果', '一把带有吸血效果的长矛。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '双手', FALSE, '{"力量": 15, "耐力": 10}', 120, 10),
+('神圣盾牌', '庚', 50, '反弹伤害', '一面神圣的盾牌，可以反弹部分攻击。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '盾牌', TRUE, '{"耐力": 12}', 150, 15),
+('火焰法杖', '己', 40, '附加火焰伤害', '释放强大火焰魔法的法杖。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '单手', TRUE, '{"智力": 10}', 90, 12),
+('光明之刃', '戊', 60, '光芒治疗', '一把可以治疗持有者的光明之刃。', 'http://www.ecg8.com/file/upload/tlzb/Shenqi_2.jpg', '双手', FALSE, '{"智力": 20, "敏捷": 10}', 200, 20);
